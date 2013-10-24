@@ -47,6 +47,8 @@ module Twine
 
         File.open(path, mode) do |f|
           last_comment = nil
+          current_comment = ""
+          reading_comment = false
           while line = (sep) ? f.gets(sep) : f.gets
             if encoding.index('UTF-16')
               if line.respond_to? :encode!
@@ -72,6 +74,15 @@ module Twine
               match = /\/\* (.*) \*\//.match(line)
               if match
                 last_comment = match[1]
+              elsif line.index(/\/\*{1}/)
+                reading_comment = true
+                current_comment = current_comment + line.gsub('/*','')
+              elsif line.index(/\*{1}\//)
+                last_comment = current_comment + line.gsub('*/','')
+                current_comment = ""
+                reading_comment = false
+              elsif reading_comment 
+                current_comment = current_comment + line
               else
                 last_comment = nil
               end
