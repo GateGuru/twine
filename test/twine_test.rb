@@ -2,6 +2,15 @@ require 'erb'
 require 'rubygems'
 require 'test/unit'
 require 'twine'
+require 'debugger'
+
+class String
+  def strip_heredoc
+    min = scan(/^[ \t]*(?=\S)/).min
+    indent = min.respond_to?(:size) ? min.size : 0
+    gsub(/^[ \t]{#{indent}}/, '')
+  end
+end
 
 class TwineTest < Test::Unit::TestCase
   def test_generate_string_file_1
@@ -92,11 +101,18 @@ class TwineTest < Test::Unit::TestCase
     end
   end
   
-  def test_consume_string_file_6
+  def test_that_multiline_comments_are_merged_appropriately
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')
       Twine::Runner.run(%W(consume-string-file --consume-comments test/fixtures/strings-2.txt test/fixtures/en-2.strings -o #{output_path} -l en -a))
-      assert_not_equal(File.read('test/fixtures/strings-2.txt'), File.read(output_path))
+      expected_strings = <<-STR.strip_heredoc
+      [[My Strings]]
+      	[key with space ]
+      		en = `string with space `
+      		tags = tag1
+      		comment = String ends with space this is a different comment in a new line
+      STR
+      assert_equal(expected_strings, File.read(output_path))
     end
   end
 
