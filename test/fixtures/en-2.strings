@@ -7,5 +7,5 @@
 /********** My Strings **********/
 
 /* String ends with space
-	this is a different comment in a new line */
+   this is a different comment in a new line */
 "key with space " = "string with space ";
