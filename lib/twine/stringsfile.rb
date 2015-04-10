@@ -147,7 +147,7 @@ module Twine
           f.puts "[[#{section.name}]]"
 
           section.rows.each do |row|
-            f.puts "\t[#{row.key}]"
+            f.puts "    [#{row.key}]"
             value = row.translations[dev_lang]
             if !value
               puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
@@ -155,15 +155,15 @@ module Twine
               if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
                 value = '`' + value + '`'
               end
-              f.puts "\t\t#{dev_lang} = #{value}"
+              f.puts "        #{dev_lang} = #{value}"
             end
 
             if row.tags && row.tags.length > 0
               tag_str = row.tags.join(',')
-              f.puts "\t\ttags = #{tag_str}"
+              f.puts "        tags = #{tag_str}"
             end
             if row.comment && row.comment.length > 0
-              f.puts "\t\tcomment = #{row.comment}"
+              f.puts "        comment = #{row.comment}"
             end
             @language_codes[1..-1].each do |lang|
               value = row.translations[lang]
@@ -171,7 +171,7 @@ module Twine
                 if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
                   value = '`' + value + '`'
                 end
-                f.puts "\t\t#{lang} = #{value}"
+                f.puts "        #{lang} = #{value}"
               end
             end
           end
